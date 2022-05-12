@@ -27,7 +27,7 @@
 
 (defn extract_timestamp
   [chunk]
-  (re-find #"(?m)May [ :\w]* 2022$" chunk))
+  (re-find #"(?m)^.* May [ :\w]* 2022$" chunk))
 
 (defn parse_timestamp
   [text]
