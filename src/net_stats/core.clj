@@ -47,7 +47,7 @@
         ]
     timestamp
     )
-  (throw "not implemented"))
+  (throw (RuntimeException. "not implemented")))
 
 (defn build_data_chunks
   [chunks]
