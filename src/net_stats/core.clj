@@ -49,7 +49,7 @@
   [chunk]
   (->> chunk
        (str/split-lines)
-       (filter #(re-find iface %))
+       (filter #(re-find (re-pattern iface) %))
        (first)))
 
 (defn parse_interface_content
@@ -86,15 +86,14 @@
     {:ts timestamp
      :data data}))
 
-(defn filter_empty_chunk
+(defn remove_empty_chunks
   [chunks]
-  (filter str/blank? chunks)
-  )
+  (filter #(not (str/blank? %)) chunks))
 
 (defn build_data_chunks
   [chunks]
   (->> chunks
-       (filter_empty_chunk)
+       (remove_empty_chunks)
        (map get_data_from_chunk)))
 
 (defn get_data_for_interface
