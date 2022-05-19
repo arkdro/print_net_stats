@@ -1,5 +1,6 @@
 (ns net-stats.core
   (:require
+   [clojure.data.json :as json]
    [clojure.string :as str]
    [clojure.tools.cli :refer [parse-opts]]
    )
@@ -17,6 +18,8 @@
    ;; A boolean option defaulting to nil
    ["-h" "--help"]])
 
+(def iface "tun0")
+
 (defn get_file
   [name]
   (slurp name))
@@ -27,31 +30,72 @@
 
 (defn extract_timestamp
   [chunk]
-  (re-find #"(?m)^.* May [ :\w]* 2022$" chunk))
+    (->> chunk
+       (str/split-lines)
+       (filter #(re-find #"(?m)^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d" %))
+       (first)))
 
 (defn parse_timestamp
   [text]
-  (let [parser (java.text.SimpleDateFormat. "EEE MMM dd HH:mm:SS zzz yyyy")]
+  (let [parser (java.text.SimpleDateFormat. "yyyy-MM-dd'T'HH:mm:SSzzz")]
     (.parse parser text)))
 
 (defn get_timestamp
   [chunk]
-  (let [text_timestamp (extract_timestamp chunk)
-        parser (java.text.SimpleDateFormat. "EEE MMM dd HH:mm:SS zzz yyyy")]
+  (let [text_timestamp (extract_timestamp chunk)]
     (parse_timestamp text_timestamp)))
+
+(defn get_interface_content
+  [chunk]
+  (->> chunk
+       (str/split-lines)
+       (filter #(re-find iface %))
+       (first)))
+
+(defn parse_interface_content
+  [text]
+  (json/read-str text))
+
+(defn is_interface_matched
+  [iface iface_data]
+  (let [iface_in_data (get iface_data "ifname")]
+    (= iface iface_in_data)))
+
+(defn find_interface_part
+  [iface all_interface_data]
+  (->> all_interface_data
+       (filter #(is_interface_matched iface %))
+       (first)))
+
+(defn extract_one_interface_data
+  [iface all_interface_data]
+  (let [iface_data (find_interface_part iface all_interface_data)
+        rx_bytes (get-in iface_data ["stats64" "rx" "bytes"])
+        tx_bytes (get-in iface_data ["stats64" "tx" "bytes"])]
+    {:iface iface
+     :rx rx_bytes
+     :tx tx_bytes}))
 
 (defn get_data_from_chunk
   [chunk]
   (let [
         timestamp (get_timestamp chunk)
-        ]
-    timestamp
-    )
-  (throw (RuntimeException. "not implemented")))
+        text (get_interface_content chunk)
+        all_interface_data (parse_interface_content text)
+        data (extract_one_interface_data iface all_interface_data)]
+    {:ts timestamp
+     :data data}))
+
+(defn filter_empty_chunk
+  [chunks]
+  (filter str/blank? chunks)
+  )
 
 (defn build_data_chunks
   [chunks]
-  (map get_data_from_chunk chunks))
+  (->> chunks
+       (filter_empty_chunk)
+       (map get_data_from_chunk)))
 
 (defn get_data_for_interface
   [data_chunk interface]
