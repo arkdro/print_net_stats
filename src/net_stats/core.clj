@@ -2,8 +2,7 @@
   (:require
    [clojure.data.json :as json]
    [clojure.string :as str]
-   [clojure.tools.cli :refer [parse-opts]]
-   )
+   [clojure.tools.cli :refer [parse-opts]])
   (:gen-class))
 
 (def cli-options
@@ -141,13 +140,10 @@
 (defn -main
   "I don't do a whole lot."
   [& args]
-  (let [
-        opts (parse-opts args cli-options)
+  (let [opts (parse-opts args cli-options)
         file (get-in opts [:options :file])
         interface (get-in opts [:options :interface])
-        ]
+        result (get_data file interface)]
     (println opts)
     (println file)
-    (get_data file interface)
-    )
-  (println "Hello, World!"))
+    (println result)))
