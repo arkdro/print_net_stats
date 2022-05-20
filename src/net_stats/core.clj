@@ -114,7 +114,7 @@
 
 (defn sort_by_datetime
   [data_chunks]
-  (sort-by :ts compare_dates data_chunks))
+  (sort-by :timestamp compare_dates data_chunks))
 
 (defn is_valid_chunk
   [chunk]
