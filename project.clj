@@ -7,4 +7,6 @@
                  [org.clojure/data.json "2.4.0"]
                  [org.clojure/tools.cli "0.3.5"]]
   :main ^:skip-aot net-stats.core
+  :target-path "target/%s"
+  :profiles {:uberjar {:aot :all}}
   :repl-options {:init-ns net-stats.core})
