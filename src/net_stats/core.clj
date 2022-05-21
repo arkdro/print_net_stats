@@ -19,7 +19,7 @@
 
 (def date_format "yyyy-MM-dd'T'HH:mm:SSzzz")
 
-(def format (java.text.SimpleDateFormat. date_format))
+(def formatter (java.text.SimpleDateFormat. date_format))
 
 (defn get_file
   [name]
@@ -38,7 +38,7 @@
 
 (defn parse_timestamp
   [text]
-  (.parse format text))
+  (.parse formatter text))
 
 (defn get_timestamp
   [chunk]
@@ -147,7 +147,7 @@
                if (:if chunk)
                rx (:rx chunk)
                tx (:tx chunk)]]
-    (println (.format format ts) if rx tx)))
+    (println (.format formatter ts) if rx tx)))
 
 (defn -main
   "I don't do a whole lot."
