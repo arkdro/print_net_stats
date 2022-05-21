@@ -150,12 +150,9 @@
     (println (.format formatter ts) if rx tx)))
 
 (defn -main
-  "I don't do a whole lot."
   [& args]
   (let [opts (parse-opts args cli-options)
         file (get-in opts [:options :file])
         interface (get-in opts [:options :interface])
         result (get_data file interface)]
-    (println opts)
-    (println file)
     (print_result result)))
