@@ -17,6 +17,10 @@
    ;; A boolean option defaulting to nil
    ["-h" "--help"]])
 
+(def date_format "yyyy-MM-dd'T'HH:mm:SSzzz")
+
+(def format (java.text.SimpleDateFormat. date_format))
+
 (defn get_file
   [name]
   (slurp name))
@@ -34,8 +38,7 @@
 
 (defn parse_timestamp
   [text]
-  (let [parser (java.text.SimpleDateFormat. "yyyy-MM-dd'T'HH:mm:SSzzz")]
-    (.parse parser text)))
+  (.parse format text))
 
 (defn get_timestamp
   [chunk]
