@@ -140,6 +140,15 @@
         sorted (sort_by_datetime valid)]
     sorted))
 
+(defn print_result
+  [chunks]
+  (doseq [chunk chunks
+         :let [ts (:timestamp chunk)
+               if (:if chunk)
+               rx (:rx chunk)
+               tx (:tx chunk)]]
+    (println (.format format ts) if rx tx)))
+
 (defn -main
   "I don't do a whole lot."
   [& args]
@@ -149,4 +158,4 @@
         result (get_data file interface)]
     (println opts)
     (println file)
-    (println result)))
+    (print_result result)))
