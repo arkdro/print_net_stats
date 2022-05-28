@@ -146,13 +146,45 @@
          :let [ts (:timestamp chunk)
                if (:if chunk)
                rx (:rx chunk)
-               tx (:tx chunk)]]
-    (println (.format formatter ts) if rx tx)))
+               tx (:tx chunk)
+               rx_delta (:rx_delta chunk)
+               tx_delta (:tx_delta chunk)]]
+    (println (.format formatter ts) if rx tx rx_delta tx_delta)))
+
+(defn calc_one_delta
+  [{rxa :rx
+    txa :tx
+    :as a}
+   {rxb :rx
+    txb :tx}]
+  (let [rx_delta (- rxb rxa)
+        tx_delta (- txb txa)]
+    (assoc a :rx_delta rx_delta :tx_delta tx_delta)
+    (cond
+      (neg? rx_delta) (assoc a :rx_delta 0 :tx_delta 0)
+      (neg? tx_delta) (assoc a :rx_delta 0 :tx_delta 0)
+      :else (assoc a :rx_delta rx_delta :tx_delta tx_delta))))
+
+(defn fill_stub_delta
+  [a]
+  (assoc a :rx_delta 0 :tx_delta 0))
+
+(defn prepare_one_delta
+  [a b]
+  (if (some? b)
+    (calc_one_delta a b)
+    (fill_stub_delta a)))
+
+(defn calc_delta
+  [items]
+  (let [tail (rest items)]
+    (map prepare_one_delta items tail)))
 
 (defn -main
   [& args]
   (let [opts (parse-opts args cli-options)
         file (get-in opts [:options :file])
         interface (get-in opts [:options :interface])
-        result (get_data file interface)]
-    (print_result result)))
+        only_rx_tx (get_data file interface)
+        with_delta (calc_delta only_rx_tx)]
+    (print_result with_delta)))
