@@ -33,5 +33,5 @@
     (cond
       ;; (:help opts) (usage)
       (= mode whole_file_mode) (whole_file/process_whole_file_at_once file interface)
-      (= mode file_by_lines_mode)(file_by_lines/process_file_by_lines file interface)
+      (= mode file_by_lines_mode) (file_by_lines/process_file_by_lines file interface)
       :else nil)))
