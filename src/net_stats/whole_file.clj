@@ -4,10 +4,6 @@
    [clojure.string :as str]
    [net-stats.item-util :as item_util]))
 
-(def date_format "yyyy-MM-dd'T'HH:mm:SSzzz")
-
-(def formatter (java.text.SimpleDateFormat. date_format))
-
 (def separating_line_regex
   (re-pattern
    (str "(?sim)^" item_util/separating_line)))
@@ -19,22 +15,6 @@
 (defn get_chunks
   [text]
   (str/split text separating_line_regex))
-
-(defn extract_timestamp
-  [chunk]
-    (->> chunk
-       (str/split-lines)
-       (filter #(re-find #"(?m)^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d" %))
-       (first)))
-
-(defn parse_timestamp
-  [text]
-  (.parse formatter text))
-
-(defn get_timestamp
-  [chunk]
-  (let [text_timestamp (extract_timestamp chunk)]
-    (parse_timestamp text_timestamp)))
 
 (defn get_interface_content
   [chunk interface]
@@ -70,7 +50,7 @@
 (defn get_data_from_chunk
   [chunk interface]
   (let [
-        timestamp (get_timestamp chunk)
+        timestamp (item_util/get_timestamp chunk)
         text (get_interface_content chunk interface)
         all_interface_data (parse_interface_content text)
         data (extract_one_interface_data interface all_interface_data)]
@@ -140,7 +120,7 @@
                tx (:tx chunk)
                rx_delta (:rx_delta chunk)
                tx_delta (:tx_delta chunk)]]
-    (println (.format formatter ts) if rx tx rx_delta tx_delta)))
+    (println (.format item_util/formatter ts) if rx tx rx_delta tx_delta)))
 
 (defn calc_one_delta
   [{rxa :rx
