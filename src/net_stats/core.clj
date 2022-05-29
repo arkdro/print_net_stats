@@ -180,11 +180,22 @@
   (let [tail (rest items)]
     (map prepare_one_delta items tail)))
 
+(defn process_whole_file_at_once
+  [file interface]
+    (let [only_rx_tx (get_data file interface)
+        with_delta (calc_delta only_rx_tx)]
+    (print_result with_delta)))
+
+(defn process_file_by_lines
+  [file interface]
+  (process_whole_file_at_once file interface))
+
 (defn -main
   [& args]
   (let [opts (parse-opts args cli-options)
+        mode (get-in opts [:options :mode])
         file (get-in opts [:options :file])
-        interface (get-in opts [:options :interface])
-        only_rx_tx (get_data file interface)
-        with_delta (calc_delta only_rx_tx)]
-    (print_result with_delta)))
+        interface (get-in opts [:options :interface])]
+    (if (= mode "whole")
+      (process_whole_file_at_once file interface)
+      (process_file_by_lines file interface))))
