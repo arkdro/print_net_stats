@@ -18,7 +18,7 @@
 
 (defn remove_empty_chunks
   [chunks]
-  (filter #(not (str/blank? %)) chunks))
+  (filter item_util/not_blank_text_chunk chunks))
 
 (defn build_data_chunks
   [chunks interface]

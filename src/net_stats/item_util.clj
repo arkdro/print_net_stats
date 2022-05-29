@@ -9,6 +9,10 @@
 
 (def formatter (java.text.SimpleDateFormat. date_format))
 
+(defn not_blank_text_chunk
+  [text]
+  (not (str/blank? text)))
+
 (defn extract_timestamp
   [chunk]
     (->> chunk
