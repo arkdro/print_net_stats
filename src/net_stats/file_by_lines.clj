@@ -1,7 +1,6 @@
 (ns net-stats.file-by-lines
   (:require
    [clojure.java.io :as io]
-   [clojure.tools.trace :as trc]
    [net-stats.item-util :as item_util]))
 
 (defn separator?
@@ -65,6 +64,5 @@
 
 (defn process_file_by_lines
   [file interface]
-  ;; (trc/trace-ns 'net-stats.file-by-lines)
   (processing file interface))
 

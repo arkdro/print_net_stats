@@ -1,6 +1,7 @@
 (ns net-stats.core
   (:require
    [clojure.tools.cli :refer [parse-opts]]
+   [clojure.tools.trace :as trc]
    [net-stats.file-by-lines :as file_by_lines]
    [net-stats.whole-file :as whole_file])
   (:gen-class))
@@ -25,6 +26,9 @@
 
 (defn -main
   [& args]
+  ;; (trc/trace-ns 'net-stats.file-by-lines)
+  ;; (trc/trace-ns 'net-stats.whole-file)
+  ;; (trc/trace-ns 'net-stats.item-util)
   (let [opts (parse-opts args cli-options)
         mode (get-in opts [:options :mode])
         file (get-in opts [:options :file])
