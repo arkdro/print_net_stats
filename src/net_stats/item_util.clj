@@ -60,13 +60,18 @@
      :rx rx_bytes
      :tx tx_bytes}))
 
-(defn get_data_from_chunk
-  [chunk interface]
-  (let [
-        timestamp (get_timestamp chunk)
-        text (get_interface_content chunk interface)
-        all_interface_data (parse_interface_content text)
+(defn get_interface_data_from_chunk
+  [chunk interface_text interface]
+  (let [timestamp (get_timestamp chunk)
+        all_interface_data (parse_interface_content interface_text)
         data (extract_one_interface_data interface all_interface_data)]
     {:ts timestamp
      :data data}))
+
+(defn get_data_from_chunk
+  [chunk interface]
+  (let [text (get_interface_content chunk interface)]
+    (if (not_blank_text_chunk text)
+      (get_interface_data_from_chunk chunk text interface)
+      nil)))
 

@@ -20,11 +20,16 @@
   [chunks]
   (filter item_util/not_blank_text_chunk chunks))
 
+(defn remove_nil_chunks
+  [chunks]
+  (filter some? chunks))
+
 (defn build_data_chunks
   [chunks interface]
   (->> chunks
        (remove_empty_chunks)
-       (map #(item_util/get_data_from_chunk % interface))))
+       (map #(item_util/get_data_from_chunk % interface))
+       (remove_nil_chunks)))
 
 (defn get_data_for_interface
   [data_chunk interface]
