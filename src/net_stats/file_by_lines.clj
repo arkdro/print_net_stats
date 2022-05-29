@@ -65,6 +65,6 @@
 
 (defn process_file_by_lines
   [file interface]
-  (trc/trace-ns 'net-stats.file-by-lines)
+  ;; (trc/trace-ns 'net-stats.file-by-lines)
   (processing file interface))
 
