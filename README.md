@@ -1,10 +1,15 @@
 # net_stats
 
-A Clojure library designed to ... well, that part is up to you.
+Process the log create by `net-stats.sh` (which uses `ip --json .....`) and print
+the counters as well as the delta.
 
 ## Usage
 
-FIXME
+`java -jar net_stats.jar -f net-stats.log -m whole_file -i wlp3s0`
+
+or
+
+`java -jar net_stats.jar -f net-stats.log -m file_by_lines -i wlp3s0`
 
 ## License
 
