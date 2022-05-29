@@ -14,6 +14,9 @@
     :validate [string? "Must be string"]]
    ["-f" "--file FILE" "input file"
     :validate [string? "Must be string"]]
+   ["-m" "--mode MODE" (str "processing mode: '" whole_file_mode "' or '" file_by_lines_mode "'")
+    :default whole_file_mode
+    :validate [string? "Must be string"]]
 
    ;; A non-idempotent option
 
