@@ -1,11 +1,16 @@
 (ns net-stats.whole-file
   (:require
    [clojure.data.json :as json]
-   [clojure.string :as str]))
+   [clojure.string :as str]
+   [net-stats.item-util :as item_util]))
 
 (def date_format "yyyy-MM-dd'T'HH:mm:SSzzz")
 
 (def formatter (java.text.SimpleDateFormat. date_format))
+
+(def separating_line_regex
+  (re-pattern
+   (str "(?sim)^" item_util/separating_line)))
 
 (defn get_file
   [name]
@@ -13,7 +18,7 @@
 
 (defn get_chunks
   [text]
-  (str/split text #"(?sim)^--- net ---"))
+  (str/split text separating_line_regex))
 
 (defn extract_timestamp
   [chunk]
